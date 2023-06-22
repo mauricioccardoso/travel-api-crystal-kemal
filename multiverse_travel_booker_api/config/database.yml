@@ -1,0 +1,18 @@
+
+default: &default
+  host: db
+  user: root
+  password: root
+  adapter: postgres
+
+development:
+  <<: *default
+  db: db-milenio
+
+# test:
+#   <<: *default
+#   db: application_database_name_test
+
+# production:
+#   <<: *default
+#   db: application_database_name_production

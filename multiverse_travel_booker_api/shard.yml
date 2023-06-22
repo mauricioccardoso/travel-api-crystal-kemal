@@ -1,0 +1,26 @@
+name: multiverse_travel_booker
+version: 0.1.0
+
+authors:
+  - mauricio-cardoso dev.mauriciocardoso@gmail.com
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  sam:
+    github: imdrasil/sam.cr
+    version: 0.4.2
+  pg:
+    github: will/crystal-pg
+    version: "~> 0.5"
+  jennifer:
+    github: imdrasil/jennifer.cr
+    version: "~> 0.13.0"
+
+targets:
+  multiverse_travel_booker:
+    main: src/main.cr
+
+crystal: 1.8.2
+
+license: MIT
