@@ -99,6 +99,22 @@ delete "/travel_plans/:id" do |env|
 end
 
 
+# Append stops to an existing list - OK
+patch "/travel_plans/:id/append" do |env|
+  id = env.params.url["id"].to_i
+  travelParams = TravelParams.from_json(env.request.body.not_nil!)
+
+  travelPlan = TravelPlan.find(id)
+
+  travelPlanStops = travelPlan.not_nil!.travel_stops
+  travelStopsUpdated = travelPlanStops.concat(travelParams.travel_stops)
+
+  TravelPlan.where { _id == id }.update { {:travel_stops => travelStopsUpdated} }
+
+  travelPlan.not_nil!.reload.to_json
+end
+
+
 #### Funções
 # Todo - Mover para outro local
 def rickMortyLocationsApi(data : Array)
