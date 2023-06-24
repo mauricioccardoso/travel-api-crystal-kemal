@@ -1,2 +1,3 @@
 require "./initializers/**"
-require "../src/models/*"
+require "../src/models/**"
+require "../src/helpers/**"

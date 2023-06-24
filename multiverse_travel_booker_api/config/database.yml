@@ -1,14 +1,13 @@
-
 default: &default
   host: db
   user: root
   password: root
   adapter: postgres
+  migration_files_path: db/migrations
 
 development:
   <<: *default
   db: db-milenio
-
 # test:
 #   <<: *default
 #   db: application_database_name_test

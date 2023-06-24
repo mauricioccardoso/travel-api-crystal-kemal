@@ -1,7 +1,7 @@
 class CreateTravelplans < Jennifer::Migration::Base
   def up
     create_table :travel_plans do |t|
-      t.integer :travel_stops, {:array => true, :null => false,}
+      t.integer :travel_stops, {:array => true, :null => false}
 
     end
   end

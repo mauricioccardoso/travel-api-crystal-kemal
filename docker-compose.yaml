@@ -25,10 +25,9 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=db-milenio
     volumes:
-      - ./multiverse_travel_booker_api/db/dbDataPsql:/data/
+      - ./multiverse_travel_booker_api/db/dbDataPsql:/var/lib/postgresql/data
     networks:
       - crystal_network
-
 
 networks:
   crystal_network:
