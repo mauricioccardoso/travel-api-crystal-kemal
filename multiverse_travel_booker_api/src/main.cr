@@ -6,6 +6,8 @@ module Main
   VERSION = "0.1.0"
 end
 
+# List All
+# Todo - optimize option
 get "/travel_plans" do |env|
   optimize = env.params.query["optimize"]? == "true"
   expand = env.params.query["expand"]? == "true"
@@ -26,6 +28,30 @@ get "/travel_plans" do |env|
   travelList.to_json
 end
 
+# List one by id
+# Todo - optimize option
+get "/travel_plans/:id" do |env|
+  optimize = env.params.query["optimize"]? == "true"
+  expand = env.params.query["expand"]? == "true"
+  id = env.params.url["id"]
+
+  travelPlan = TravelPlan.find(id)
+
+  if !travelPlan.nil? && expand
+    travelPlanExpanded = {
+      "id" => travelPlan.not_nil!.id,
+      "travel_stops" => expand_travel_stops(travelPlan.not_nil!.travel_stops)
+    }
+    travelPlan = travelPlanExpanded
+  end
+
+  env.response.content_type = "application/json"
+  env.response.status_code = 200
+  travelPlan.to_json
+
+end
+
+
 # Create - OK
 class TravelParams
   include JSON::Serializable
@@ -39,7 +65,6 @@ post "/travel_plans" do |env|
 
   env.response.content_type = "application/json"
   env.response.status_code = 201
-
   travelPlan.to_json
 end
 # Create ↑ 
