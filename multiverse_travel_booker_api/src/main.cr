@@ -12,7 +12,7 @@ get "/travel_plans" do |env|
   optimize = env.params.query["optimize"]? == "true"
   expand = env.params.query["expand"]? == "true"
   
-  travelList = TravelPlan.all.to_a.as(Array(TravelPlan))
+  travelList = TravelPlan.all.order(id: :asc).to_a
 
   if !travelList.empty? && expand
     travelList = travelList.map do |travelItem|
@@ -68,6 +68,20 @@ post "/travel_plans" do |env|
   travelPlan.to_json
 end
 # Create ↑ 
+
+# Update a plan - OK
+put "/travel_plans/:id" do |env|
+  id = env.params.url["id"].to_i
+  travelParams = TravelParams.from_json(env.request.body.not_nil!)
+
+  TravelPlan.where { _id == id }.update { {:travel_stops => travelParams.travel_stops} }
+  travelPlan = TravelPlan.find(id)
+
+  env.response.content_type = "application/json"
+  env.response.status_code = 200
+  travelPlan.to_json
+end
+
 
 #### Funções
 # Todo - Mover para outro local
