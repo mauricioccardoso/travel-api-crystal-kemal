@@ -6,6 +6,8 @@ USER crystal
 
 WORKDIR /home/crystal/app
 
+COPY ./.bash_aliases /home/crystal
+
 EXPOSE 3000
 
 CMD [ "tail", "-f", "/dev/null" ]

@@ -111,6 +111,8 @@ patch "/travel_plans/:id/append" do |env|
 
   TravelPlan.where { _id == id }.update { {:travel_stops => travelStopsUpdated} }
 
+  env.response.content_type = "application/json"
+  env.response.status_code = 200
   travelPlan.not_nil!.reload.to_json
 end
 
