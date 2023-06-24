@@ -6,6 +6,11 @@ module Main
   VERSION = "0.1.0"
 end
 
+# Todo
+# Refatoração - Controller, Routes, Services?, Request_Helper
+# Adicionar tratamento em todas as rotas
+
+
 # List All
 # Todo - optimize option
 get "/travel_plans" do |env|
@@ -27,6 +32,7 @@ get "/travel_plans" do |env|
   env.response.status_code = 200
   travelList.to_json
 end
+
 
 # List one by id
 # Todo - optimize option
@@ -69,6 +75,7 @@ post "/travel_plans" do |env|
 end
 # Create ↑ 
 
+
 # Update a plan - OK
 put "/travel_plans/:id" do |env|
   id = env.params.url["id"].to_i
@@ -80,6 +87,15 @@ put "/travel_plans/:id" do |env|
   env.response.content_type = "application/json"
   env.response.status_code = 200
   travelPlan.to_json
+end
+
+
+# Delete a plan - OK
+delete "/travel_plans/:id" do |env|
+  id = env.params.url["id"].to_i
+
+  TravelPlan.delete(id)
+  env.response.status_code = 204
 end
 
 
