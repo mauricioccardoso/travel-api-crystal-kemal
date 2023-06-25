@@ -2,7 +2,7 @@ require "../models/TravelPlan"
 require "./interfaces/ITravelPlanRepository"
 class TravelPlanRepository < ITravelPlanRepository
 
-  def list
+  def getAll
     TravelPlan.all.order(id: :asc).to_a
   end
 

@@ -10,7 +10,7 @@ class TravelPlanService
   end
 
   def getAll
-    self.travelPlanRepository.list
+      self.travelPlanRepository.getAll
   end
 
   def findById (id : Int32)
@@ -48,16 +48,7 @@ class TravelPlanService
     travelPlan.not_nil!.reload
   end
 
-  def expandTravelList (travelList)
-    travelList.map do |travelItem|
-      {
-        "id" => travelItem.id,
-        "travel_stops" => self._expandTravelStops(travelItem.travel_stops).as(Array(Hash(String, JSON::Any)))
-      }
-    end
-  end
-
-  def expandTravelPlan (id, travelPlan)
+  def expandTravelPlan (travelPlan)
     {
       "id" =>  travelPlan.not_nil!.id,
       "travel_stops" => self._expandTravelStops( travelPlan.not_nil!.travel_stops)

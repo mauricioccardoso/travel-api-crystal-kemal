@@ -7,11 +7,11 @@ travelPlanService = TravelPlanService.new (travelPlanRepository)
 travelPlanController = TravelPlanController.new (travelPlanService)
 
 get "/travel_plans" do |env|
-  travelPlanController.listAll(env.params, env.response)
+  travelPlanController.getAll(env.params, env.response)
 end
 
 get "/travel_plans/:id" do |env|
-  travelPlanController.listOne(env.params, env.response)
+  travelPlanController.getOne(env.params, env.response)
 end
 
 post "/travel_plans" do |env|

@@ -1,6 +1,6 @@
 abstract class ITravelPlanRepository
 
-  abstract def list
+  abstract def getAll
 
   abstract def findById(id : Int32)
 
