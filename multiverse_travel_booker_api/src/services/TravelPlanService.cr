@@ -1,6 +1,6 @@
 require "../helpers/serializers/TravelParams"
 require "./locationsRickMortyApi"
-
+require "../helpers/serializers/locationsExpandedFormated"
 
 class TravelPlanService
   
@@ -40,33 +40,26 @@ class TravelPlanService
 
     travelPlan = self.travelPlanRepository.findById(id)
 
-    travelPlanStops = travelPlan.not_nil!.travel_stops
+    if travelPlan.nil?
+      return nil
+    end
+
+    travelPlanStops = travelPlan.travel_stops
     travelPlanStops.concat(travelParams.travel_stops)
 
     self.travelPlanRepository.update(id, travelPlanStops)
 
-    travelPlan.not_nil!.reload
+    travelPlan.reload
+
   end
 
   def expandTravelPlan (travelPlan)
+    locations = locationsRickMortyApi(travelPlan.travel_stops)
+    locationsFormated = Array(LocationsExpandedFormated).from_json(locations)
+
     {
       "id" =>  travelPlan.not_nil!.id,
-      "travel_stops" => self._expandTravelStops( travelPlan.not_nil!.travel_stops)
+      "travel_stops" => locationsFormated
     }
-  end
-
-  def _expandTravelStops(travel_stops : Array(Int32))
-    locations = locationsRickMortyApi(travel_stops)
-  
-    travel_stops.map do |id|
-      location = locations.find{ |location| location["id"] == id}.as(JSON::Any)
-      
-      {
-        "id" => location["id"],
-        "name" => location["name"],
-        "type" => location["type"],
-        "dimension" => location["dimension"]
-      }.as(Hash(String, JSON::Any))
-    end
   end
 end
