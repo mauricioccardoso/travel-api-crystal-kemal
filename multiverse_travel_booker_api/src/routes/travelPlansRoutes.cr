@@ -1,7 +1,9 @@
-require "../controllers/TravelPlanController"
+require "../repositories/TravelPlanRepository"
 require "../services/TravelPlanService"
+require "../controllers/TravelPlanController"
 
-travelPlanService = TravelPlanService.new
+travelPlanRepository = TravelPlanRepository.new
+travelPlanService = TravelPlanService.new (travelPlanRepository)
 travelPlanController = TravelPlanController.new (travelPlanService)
 
 get "/travel_plans" do |env|

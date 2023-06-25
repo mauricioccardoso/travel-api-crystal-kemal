@@ -1,41 +1,49 @@
-require "../models/TravelPlan"
 require "../helpers/serializers/TravelParams"
+require "./locationsRickMortyApi"
+
 
 class TravelPlanService
   
+  getter travelPlanRepository : ITravelPlanRepository
+
+  def initialize(@travelPlanRepository)
+  end
+
   def getAll
-    TravelPlan.all.order(id: :asc).to_a
+    self.travelPlanRepository.list
   end
 
   def findById (id : Int32)
-    TravelPlan.find(id)
+    self.travelPlanRepository.findById(id)
   end
 
   def createPlan (data : String)
     travelParams = TravelParams.from_json(data)
-    TravelPlan.create(travel_stops: travelParams.travel_stops)
+
+    self.travelPlanRepository.create(travelParams.travel_stops)
   end
 
   def updatePlan(id : Int32, data : String)
     travelParams = TravelParams.from_json(data)
-    TravelPlan.where { _id == id }.update { {:travel_stops => travelParams.travel_stops} }
 
-    self.findById(id)
+    self.travelPlanRepository.update(id, travelParams.travel_stops)
+
+    self.travelPlanRepository.findById(id)
   end
 
   def deletePlan (id : Int32)
-    TravelPlan.delete(id)
+    self.travelPlanRepository.delete(id)
   end
 
   def appendStops (id : Int32, data : String)
     travelParams = TravelParams.from_json(data)
 
-    travelPlan = self.findById(id)
+    travelPlan = self.travelPlanRepository.findById(id)
 
     travelPlanStops = travelPlan.not_nil!.travel_stops
     travelPlanStops.concat(travelParams.travel_stops)
 
-    TravelPlan.where { _id == id }.update { {:travel_stops => travelPlanStops} }
+    self.travelPlanRepository.update(id, travelPlanStops)
 
     travelPlan.not_nil!.reload
   end
@@ -44,7 +52,7 @@ class TravelPlanService
     travelList.map do |travelItem|
       {
         "id" => travelItem.id,
-        "travel_stops" => self.expandTravelStops(travelItem.travel_stops).as(Array(Hash(String, JSON::Any)))
+        "travel_stops" => self._expandTravelStops(travelItem.travel_stops).as(Array(Hash(String, JSON::Any)))
       }
     end
   end
@@ -52,11 +60,11 @@ class TravelPlanService
   def expandTravelPlan (id, travelPlan)
     {
       "id" =>  travelPlan.not_nil!.id,
-      "travel_stops" => self.expandTravelStops( travelPlan.not_nil!.travel_stops)
+      "travel_stops" => self._expandTravelStops( travelPlan.not_nil!.travel_stops)
     }
   end
 
-  def expandTravelStops(travel_stops : Array(Int32))
+  def _expandTravelStops(travel_stops : Array(Int32))
     locations = locationsRickMortyApi(travel_stops)
   
     travel_stops.map do |id|
