@@ -2,7 +2,7 @@ require "jennifer"
 require "jennifer/adapter/postgres"
 require "colorize"
 
-APP_ENV = ENV["APP_ENV"]? || "development"
+APP_ENV = "development"
 
 Jennifer::Config.configure do |conf|
     if APP_ENV == "development"

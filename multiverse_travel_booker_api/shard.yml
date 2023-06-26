@@ -5,6 +5,8 @@ authors:
   - mauricio-cardoso dev.mauriciocardoso@gmail.com
 
 dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
   kemal:
     github: kemalcr/kemal
   sam:

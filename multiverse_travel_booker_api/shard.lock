@@ -6,7 +6,7 @@ shards:
 
   db:
     git: https://github.com/crystal-lang/crystal-db.git
-    version: 0.11.0
+    version: 0.12.0
 
   exception_page:
     git: https://github.com/crystal-loot/exception_page.git
@@ -30,7 +30,7 @@ shards:
 
   pg:
     git: https://github.com/will/crystal-pg.git
-    version: 0.26.0
+    version: 0.27.0
 
   radix:
     git: https://github.com/luislavena/radix.git
@@ -39,6 +39,10 @@ shards:
   sam:
     git: https://github.com/imdrasil/sam.cr.git
     version: 0.4.2
+
+  spec-kemal:
+    git: https://github.com/kemalcr/spec-kemal.git
+    version: 1.0.0
 
   wordsmith:
     git: https://github.com/luckyframework/wordsmith.git

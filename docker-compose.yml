@@ -4,11 +4,12 @@ services:
   app:
     build: .
     container_name: app
+    command: wait-for db:5432 -t 60 -- ../start.sh
     restart: unless-stopped
     ports:
       - 3000:3000
     volumes:
-      - ./multiverse_travel_booker_api:/home/crystal/app
+      - .:/home/crystal/app/
     networks:
       - crystal_network
     depends_on:
@@ -16,7 +17,6 @@ services:
 
   db:
     image: postgres
-    container_name: db
     restart: unless-stopped
     ports:
       - 5432:5432
