@@ -1,4 +1,4 @@
-class LocationsExpandedFormated
+struct LocationsExpandedFormated
   include JSON::Serializable
 
   property id : Int32

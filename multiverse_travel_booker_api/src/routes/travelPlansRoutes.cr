@@ -1,10 +1,16 @@
 require "../repositories/TravelPlanRepository"
 require "../services/TravelPlanService"
+require "../services/RickMortyAPI"
 require "../controllers/TravelPlanController"
+require "../helpers/HttpClient"
+
+httpClient = HttpClient.new("rickandmortyapi.com")
+rickMortyAPI = RickMortyAPI.new(httpClient)
 
 travelPlanRepository = TravelPlanRepository.new
-travelPlanService = TravelPlanService.new (travelPlanRepository)
-travelPlanController = TravelPlanController.new (travelPlanService)
+
+travelPlanService = TravelPlanService.new( travelPlanRepository, rickMortyAPI )
+travelPlanController = TravelPlanController.new(travelPlanService)
 
 get "/travel_plans" do |env|
   travelPlanController.getAll(env.params, env.response)

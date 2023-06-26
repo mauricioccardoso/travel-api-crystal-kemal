@@ -1,9 +1,10 @@
 require "../helpers/response"
 require "../helpers/responseError"
+require "../models/TravelPlan"
 
 class  TravelPlanController
 
-  getter travelPlanService : TravelPlanService
+  property travelPlanService : TravelPlanService
 
   def initialize(@travelPlanService)
   end
@@ -13,11 +14,16 @@ class  TravelPlanController
       optimize = params.query["optimize"]? == "true"
       expand = params.query["expand"]? == "true"
   
-      travelList = self.travelPlanService.getAll
+      travelList = travelPlanService.getAll.as(Array(TravelPlan))
   
-      if !travelList.empty? && expand
+      if !travelList.empty? && expand && !optimize
         travelList = travelList.map do |travelItem|
-          self.travelPlanService.expandTravelPlan(travelItem)
+          travelPlanService.expandTravelPlan(travelItem)
+        end
+
+      elsif !travelList.empty? && optimize
+        travelList = travelList.map do |travelItem|
+          travelPlanService.optimize(travelItem, expand)
         end
       end
       
@@ -34,10 +40,13 @@ class  TravelPlanController
       expand = params.query["expand"]? == "true"
       id = params.url["id"].to_i
 
-      travelPlan = self.travelPlanService.findById(id)
+      travelPlan = travelPlanService.findById(id)
 
-      if !travelPlan.nil? && expand
-        travelPlan = self.travelPlanService.expandTravelPlan(travelPlan)
+      if !travelPlan.nil? && expand && !optimize
+        travelPlan = travelPlanService.expandTravelPlan(travelPlan)
+
+      elsif !travelPlan.nil? && optimize
+        travelPlan = travelPlanService.optimize(travelPlan, expand)
       end
 
       response(response, travelPlan)
@@ -49,7 +58,7 @@ class  TravelPlanController
 
   def create (params, response)
     begin
-      travelPlan = self.travelPlanService.createPlan(params.json.to_json)
+      travelPlan = travelPlanService.createPlan(params.json.to_json)
   
       response(response, travelPlan, 201)
       
@@ -62,7 +71,7 @@ class  TravelPlanController
     begin
       id = params.url["id"].to_i
     
-      travelPlan = self.travelPlanService.updatePlan(id, params.json.to_json)
+      travelPlan = travelPlanService.updatePlan(id, params.json.to_json)
 
       response(response, travelPlan)
 
@@ -75,7 +84,7 @@ class  TravelPlanController
     begin
       id = params.url["id"].to_i
   
-      self.travelPlanService.deletePlan(id)
+      travelPlanService.deletePlan(id)
   
       response(response, nil, 204)
 
@@ -88,7 +97,7 @@ class  TravelPlanController
     begin
       id = params.url["id"].to_i
   
-      travelPlan = self.travelPlanService.appendStops(id, params.json.to_json)
+      travelPlan = travelPlanService.appendStops(id, params.json.to_json)
   
       response(response, travelPlan)
       

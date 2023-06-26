@@ -1,44 +1,46 @@
 require "../helpers/serializers/TravelParams"
-require "./locationsRickMortyApi"
+require "./RickMortyAPI"
 require "../helpers/serializers/locationsExpandedFormated"
+require "../helpers/SortFunctions"
 
 class TravelPlanService
-  
-  getter travelPlanRepository : ITravelPlanRepository
 
-  def initialize(@travelPlanRepository)
+  property rickMortyApi : RickMortyAPI
+  property travelPlanRepository : ITravelPlanRepository
+
+  def initialize(@travelPlanRepository, @rickMortyApi)
   end
 
   def getAll
-      self.travelPlanRepository.getAll
+      travelPlanRepository.getAll
   end
 
   def findById (id : Int32)
-    self.travelPlanRepository.findById(id)
+    travelPlanRepository.findById(id)
   end
 
   def createPlan (data : String)
     travelParams = TravelParams.from_json(data)
 
-    self.travelPlanRepository.create(travelParams.travel_stops)
+    travelPlanRepository.create(travelParams.travel_stops)
   end
 
   def updatePlan(id : Int32, data : String)
     travelParams = TravelParams.from_json(data)
 
-    self.travelPlanRepository.update(id, travelParams.travel_stops)
+    travelPlanRepository.update(id, travelParams.travel_stops)
 
-    self.travelPlanRepository.findById(id)
+    travelPlanRepository.findById(id)
   end
 
   def deletePlan (id : Int32)
-    self.travelPlanRepository.delete(id)
+    travelPlanRepository.delete(id)
   end
 
   def appendStops (id : Int32, data : String)
     travelParams = TravelParams.from_json(data)
 
-    travelPlan = self.travelPlanRepository.findById(id)
+    travelPlan = travelPlanRepository.findById(id)
 
     if travelPlan.nil?
       return nil
@@ -47,19 +49,48 @@ class TravelPlanService
     travelPlanStops = travelPlan.travel_stops
     travelPlanStops.concat(travelParams.travel_stops)
 
-    self.travelPlanRepository.update(id, travelPlanStops)
+    travelPlanRepository.update(id, travelPlanStops)
 
     travelPlan.reload
-
   end
 
   def expandTravelPlan (travelPlan)
-    locations = locationsRickMortyApi(travelPlan.travel_stops)
+    locations = rickMortyApi.locations(travelPlan.travel_stops)
     locationsFormated = Array(LocationsExpandedFormated).from_json(locations)
 
     {
-      "id" =>  travelPlan.not_nil!.id,
+      "id" =>  travelPlan.id,
       "travel_stops" => locationsFormated
+    }
+  end
+
+  def optimize (travelItem, expand)
+    locations = rickMortyApi.locationsAndEpisodes(travelItem.travel_stops)
+
+    locationsSort = sortLocations(locations)
+
+    dataMount(travelItem, locationsSort, expand)
+  end
+
+  def dataMount (travelItem, locationsSort, expand)
+    if expand
+      travelStopData = locationsSort.map do |location|
+        {
+          "id" => location.id.to_i,
+          "name" => location.name,
+          "type" => location.type,
+          "dimension" => location.dimension
+        }
+      end
+    else
+      travelStopData = locationsSort.map do |location|
+        location.id.to_i
+      end
+    end
+    
+    {
+      "id" => travelItem.id,
+      "travel_stops" => travelStopData
     }
   end
 end
