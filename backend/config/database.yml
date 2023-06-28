@@ -7,7 +7,7 @@ default: &default
 
 development:
   <<: *default
-  db: db-milenio
+  db: mydb
 # test:
 #   <<: *default
 #   db: application_database_name_test

@@ -9,7 +9,7 @@ RUN useradd -m crystal
 
 USER crystal
 
-WORKDIR /home/crystal/app/multiverse_travel_booker_api
+WORKDIR /home/crystal/app/backend
 
 COPY ./.bash_aliases /home/crystal
 

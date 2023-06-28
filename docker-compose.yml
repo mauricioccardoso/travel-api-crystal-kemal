@@ -23,9 +23,9 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=db-milenio
+      - POSTGRES_DB=mydb
     volumes:
-      - ./multiverse_travel_booker_api/db/dbDataPsql:/var/lib/postgresql/data
+      - ./backend/db/dbDataPsql:/var/lib/postgresql/data
     networks:
       - crystal_network
 
