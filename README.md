@@ -78,13 +78,13 @@ O projeto da API de planos de viagens foi desenvolvido utilizando conceitos de P
 1. Clone o repositório
 
 ```bash
-  git clone <URL_DO_REPOSITÓRIO>
+  git clone https://github.com/mauricioccardoso/travel-api-crystal-kemal.git
 ```
 
 2. Acesse o diretório do projeto
 
 ```bash
-  cd <NOME_DO_PROJETO>
+  cd travel-api-crystal-kemal
 ```
 
 3. Inicie o container
